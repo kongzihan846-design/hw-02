@@ -98,16 +98,33 @@ However, the two distributions overlap.
 
 ## Exercise 2
 
-```{r ex2, out.width = "80%"}
-# Write your code to answer exercise 2a here
 
+# Write your code to answer exercise 2a here
+```{r ex2, out.width="80%"}
+data_5k_10k %>%
+  filter(!is.na(gender)) %>%
+  mutate(
+    pace = (elapsed.time..s. / 60) / (distance..m. / 1000),
+    event = factor(event, levels = c("5k", "10k"))
+  ) %>%
+  ggplot(aes(x = event, y = pace)) +
+  geom_boxplot() +
+  facet_wrap(~ gender, nrow = 1) +
+  labs(
+    title = "Running pace for 5k and 10k runs",
+    subtitle = "F = Female, M = Male; lower pace means faster running",
+    x = "Run distance",
+    y = "Pace (minutes per km)"
+  )
 
 
 
 ```
 
-_Write your text to answer exercise 2b here (Please delete this message before submission!)_
-
+Male runs have a lower median pace than female runs at both distances,
+so they are generally faster in this dataset. For both genders, 10k runs
+have a slightly lower median pace than 5k runs. The 5k runs show more
+variation, with some much slower runs.
 
 
 
