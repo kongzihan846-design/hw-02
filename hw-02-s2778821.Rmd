@@ -190,15 +190,48 @@ groups have different speed patterns, although their results overlap.
 
 ```{r ex4, out.width = "80%"}
 # Write your code to answer exercise 4 here
+gender_means <- strava_runs %>%
+  filter(!is.na(gender)) %>%
+  group_by(gender) %>%
+  summarise(
+    mean_distance = mean(distance..m., na.rm = TRUE) / 1000,
+    mean_time = mean(elapsed.time..s., na.rm = TRUE) / 60
+  )
 
+gender_means
+
+gender_means %>%
+  pivot_longer(
+    cols = c(mean_distance, mean_time),
+    names_to = "measure",
+    values_to = "mean_value"
+  ) %>%
+  mutate(
+    measure = factor(
+      measure,
+      levels = c("mean_distance", "mean_time"),
+      labels = c("Mean distance (km)", "Mean time (minutes)")
+    )
+  ) %>%
+  ggplot(aes(x = gender, y = mean_value, fill = gender)) +
+  geom_col() +
+  facet_wrap(~ measure, scales = "free_y", nrow = 1) +
+  labs(
+    title = "Mean running distance and time by gender",
+    subtitle = "F = Female, M = Male",
+    x = "Gender",
+    y = "Mean value",
+    fill = "Gender"
+  )
 
 
 
 
 ```
 
-
-_Write your text to answer exercise 4b here (Please delete this message before submission!)_
+Male runs have a longer mean distance (10.61 km) than female runs
+(9.70 km). However, the mean elapsed time is almost the same for both
+genders, at about 62.4 minutes.
 
 
 
