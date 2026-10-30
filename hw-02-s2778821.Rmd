@@ -32,21 +32,56 @@ data_5k_10k <- strava_runs %>%
 
 When you fill the missing part, remove the # symbol before running the code chunk and eval=FALSE
 
-```{r ex1a, out.width="80%", eval=FALSE}
-data_5k_10k %>% 
-  # filter(______) %>%
+```{r ex1a, out.width="80%"}
+data_5k_10k %>%
+  filter(gender == "M") %>%
   filter(!is.na(average.heart.rate..bpm.)) %>%
-  # ggplot(aes(x = __________)) + 
-  geom_histogram(bins = 20)
+  ggplot(aes(x = average.heart.rate..bpm.)) +
+  geom_histogram(bins = 20) +
+  labs(
+    title = "Average heart rate for male runners",
+    x = "Average heart rate (bpm)",
+    y = "Number of runs"
+  )
+
+data_5k_10k %>%
+  filter(gender == "M") %>%
+  summarise(
+    n = sum(!is.na(average.heart.rate..bpm.)),
+    mean_bpm = mean(average.heart.rate..bpm., na.rm = TRUE),
+    median_bpm = median(average.heart.rate..bpm., na.rm = TRUE),
+    sd_bpm = sd(average.heart.rate..bpm., na.rm = TRUE)
+  )
 ```
-
-
-_Write your text to answer exercise 1a here (Please delete this message before submission!)_
+The histogram is approximately unimodal and bell-shaped, with a main peak
+around 145–150 bpm. The mean (147.94 bpm) and median (147.90 bpm) are
+almost identical, supporting an approximately symmetric distribution.
+The standard deviation is 17.22 bpm. There is no clear evidence of
+separate clusters in this histogram. These statistics are based on
+252 runs with non-missing heart rate measurements.
 
 
 ```{r ex1b, out.width="80%"}
 # Write your code for Ex1b here
+data_5k_10k %>%
+  filter(gender == "F") %>%
+  filter(!is.na(average.heart.rate..bpm.)) %>%
+  ggplot(aes(x = average.heart.rate..bpm.)) +
+  geom_histogram(bins = 20) +
+  labs(
+    title = "Average heart rate for female runners",
+    x = "Average heart rate (bpm)",
+    y = "Number of runs"
+  )
 
+data_5k_10k %>%
+  filter(gender == "F") %>%
+  summarise(
+    n = sum(!is.na(average.heart.rate..bpm.)),
+    mean_bpm = mean(average.heart.rate..bpm., na.rm = TRUE),
+    median_bpm = median(average.heart.rate..bpm., na.rm = TRUE),
+    sd_bpm = sd(average.heart.rate..bpm., na.rm = TRUE)
+  )
 
 
 
@@ -54,7 +89,11 @@ _Write your text to answer exercise 1a here (Please delete this message before s
 ```
 
 
-_Write your text to answer exercise 1b here (Please delete this message before submission!)_
+The female histogram has several peaks and is less smooth than the male
+histogram. Female runs have a higher mean heart rate (155.68 bpm) than
+male runs (147.94 bpm). The standard deviation is smaller for females
+(13.22 versus 17.22 bpm), so their heart rates are less spread out.
+However, the two distributions overlap.
 
 
 ## Exercise 2
