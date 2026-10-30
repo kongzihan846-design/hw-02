@@ -132,7 +132,48 @@ variation, with some much slower runs.
 
 ```{r ex3, out.width = "80%"}
 # Write your code to answer exercise 3 here
+runner_groups <- strava_runs %>%
+  group_by(athlete) %>%
+  summarise(
+    mean_distance = mean(distance..m., na.rm = TRUE) / 1000
+  ) %>%
+  mutate(
+    runner_type = case_when(
+      mean_distance > 13 ~ "Long-distance runner",
+      mean_distance < 7 ~ "Short-distance runner",
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  filter(!is.na(runner_type))
 
+runner_data <- strava_runs %>%
+  inner_join(runner_groups, by = "athlete") %>%
+  mutate(
+    distance_km = distance..m. / 1000,
+    speed = distance..m. / elapsed.time..s.
+  )
+
+ggplot(
+  runner_data,
+  aes(x = distance_km, y = speed, colour = runner_type)
+) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(method = "lm", formula = y ~ x, se = FALSE) +
+  scale_colour_manual(
+    values = c(
+      "Long-distance runner" = "orange",
+      "Short-distance runner" = "forestgreen"
+    )
+  ) +
+  labs(
+    title = "Speed vs Distance for Long- and Short-Distance Runners",
+    subtitle = "Grouped by runners' average distance: >13 km vs <7 km",
+    x = "Run distance (km)",
+    y = "Run average speed (m/s)",
+    colour = NULL
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
 
 
 
@@ -140,8 +181,10 @@ variation, with some much slower runs.
 ```
 
 
-_Write your text to answer exercise 3b here (Please delete this message before submission!)_
-
+Long-distance runners tend to run faster than short-distance runners
+at the same distance. Both lines slope downwards, but the decrease
+is greater for short-distance runners. This suggests that the two
+groups have different speed patterns, although their results overlap.
 
 ## Exercise 4
 
